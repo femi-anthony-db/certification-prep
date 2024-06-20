@@ -6,3 +6,530 @@ You were asked to create a table that can store the below data, orderTime is a t
 
 ![table_data](img/dbcdea_test1_01.png)
 
+Ans:
+
+
+
+Question 14: Incorrect
+
+If you run the command `VACUUM transactions retain 0 hours`,  What is the outcome of this command?
+
+Ans:
+
+
+Command will fail, you cannot run the command with retentionDurationcheck enabled
+
+Need to set retentionDurationcheck to false in order to run this command. 
+
+
+
+Question 18 Incorrect
+Which of the following command can be used to drop a managed delta table and the underlying files in the storage?
+
+Ans: DROP TABLE table_name
+
+
+Question 20 Incorrect
+Which of the following is correct for the global temporary view?
+
+Ans: global temporary views can be still accessed even if the notebook is detached and attached
+
+
+https://medium.com/@saravjeet.singh/databricks-basics-databases-tables-and-views-4e180d7bb293
+
+
+
+Question 29 End-to end Fault tolerance
+
+Which of the following techniques structured streaming uses to create an end-to-end fault tolerance ?
+
+```
+
+   A. Checkpointing and Water marking
+
+   B. Write ahead logging and water marking
+
+   C. Checkpointing and idempotent sinks
+
+   D. Write ahead logging and idempotent sinks
+
+   E. Stream will failover to available nodes in the cluster.
+
+```
+
+Could be C or D 
+
+_____________________________
+
+Question 30 Auto Loader
+
+Which of the following two options are supported in identifying the arrival of new files, and incremental data from Cloud object storage using Auto Loader?
+
+
+A. Directory listing, File notification
+
+B. Checking pointing, watermarking
+
+C. Writing ahead logging, read head logging
+
+D. File hashing, Dynamic file lookup
+
+E. Checkpointing and Write ahead logging
+
+Ans: A
+
+_______________________________________
+
+
+Question 35 - Incremental Data Processing
+
+
+When building a DLT s pipeline you have two options to create a live tables, what is the main difference between 
+CREATE STREAMING LIVE TABLE vs CREATE LIVE TABLE ?
+
+
+A.  CREATE STREAMING LIVE table is used in MULTI HOP Architecture
+
+B. CREATE LIVE TABLE is used when working with Streaming data sources and Incremental data
+
+C. CREATE STREAMING LIVE TABLE is used when working with Streaming data sources and Incremental data
+
+D. There is no difference both are the same, CREATE STRAMING LIVE will be deprecated soon
+
+E. CREATE LIVE TABLE is used in DELTA LIVE TABLES, CREATE STREAMING LIVE can only used in Structured Streaming applications
+
+Ans: C
+
+https://chatgpt.com/c/98d64112-1a20-461a-9526-3f414ca5e7cf
+
+_____________________________________________________
+
+Question 38 - SQL Warehouses
+
+You have noticed that Databricks SQL queries are running slow, you are asked to look reason why queries are running slow and identify 
+steps to improve the performance, when you looked at the issue you noticed all the queries are running in parallel and using a 
+SQL endpoint(SQL Warehouse) with a single cluster. 
+
+Which of the following steps can be taken to improve the performance/response times of the queries?
+
+*Please note Databricks recently renamed SQL endpoint to SQL warehouse.*
+
+
+A. They can turn on the Serverless feature for the SQL endpoint(SQL warehouse).
+
+B. They can increase the maximum bound of the SQL endpoint(SQL warehouse)’s scaling range
+
+C. They can increase the warehouse size from 2X-Smal to 4XLarge of the SQL endpoint(SQL warehouse).
+
+D. They can turn on the Auto Stop feature for the SQL endpoint(SQL warehouse).
+
+E. They can turn on the Serverless feature for the SQL endpoint(SQL warehouse) and change the Spot Instance Policy to “Reliability Optimized.”
+
+Ans: B
+
+
+Overall explanation
+The answer is, They can increase the maximum bound of the SQL endpoint’s scaling range when you increase the max scaling range more clusters are added so queries instead of waiting in the queue can start running using available clusters, see below for more explanation.
+
+
+
+The question is looking to test your ability to know how to scale a SQL Endpoint(SQL Warehouse) and you have to look for cue words or need to understand if the queries are running sequentially or concurrently. if the queries are running sequentially then scale up(Size of the cluster from 2X-Small to 4X-Large) if the queries are running concurrently or with more users then scale out(add more clusters).
+
+
+SQL Endpoint(SQL Warehouse) Overview: (Please read all of the below points and the below diagram to understand )
+
+
+
+A SQL Warehouse should have at least one cluster
+
+A cluster comprises one driver node and one or many worker nodes
+
+No of worker nodes in a cluster is determined by the size of the cluster (2X -Small ->1 worker, X-Small ->2 workers.... up to 4X-Large -> 128 workers) this is called Scale up
+
+A single cluster irrespective of cluster size(2X-Smal.. to ...4XLarge) can only run 10 queries at any given time if a user submits 20 queries all at once to a warehouse with 3X-Large cluster size and cluster scaling (min 1, max1) while 10 queries will start running the remaining 10 queries wait in a queue for these 10 to finish.
+
+Increasing the Warehouse cluster size can improve the performance of a query, for example, if a query runs for 1 minute in a 2X-Small warehouse size it may run in 30 Seconds if we change the warehouse size to X-Small. this is due to 2X-Small having 1 worker node and X-Small having 2 worker nodes so the query has more tasks and runs faster (note: this is an ideal case example, the scalability of a query performance depends on many factors, it can not always be linear)
+
+A warehouse can have more than one cluster this is called Scale out. If a warehouse is configured with X-Small cluster size with cluster scaling(Min1, Max 2) Databricks spins up an additional cluster if it detects queries are waiting in the queue, If a warehouse is configured to run 2 clusters(Min1, Max 2), and let's say a user submits 20 queries, 10 queriers will start running and holds the remaining in the queue and databricks will automatically start the second cluster and starts redirecting the 10 queries waiting in the queue to the second cluster.
+
+A single query will not span more than one cluster, once a query is submitted to a cluster it will remain in that cluster until the query execution finishes irrespective of how many clusters are available to scale.
+
+
+https://docs.databricks.com/en/compute/sql-warehouse/index.html
+
+__________________________
+
+
+Question 39 - SQL Warehouses
+
+You currently working with the marketing team to setup a dashboard for ad campaign analysis, since the team is not sure how often the dashboard should be refreshed they have decided to do a manual refresh on an as needed basis. Which of the following steps can be taken to reduce the overall cost of the compute when the team is not using the compute?
+
+```
+
+A. They can turn on the Serverless feature for the SQL endpoint(SQL Warehouse).
+
+B. They can decrease the maximum bound of the SQL endpoint(SQL Warehouse) scaling range.
+
+C. They can decrease the cluster size of the SQL endpoint(SQL Warehouse).
+
+D. They can turn on the Auto Stop feature for the SQL endpoint(SQL Warehouse).
+
+E. They can turn on the Serverless feature for the SQL endpoint(SQL Warehouse) and change the Spot Instance Policy from “Reliability Optimized” to  “Cost optimized”
+
+```
+
+Ans: D
+
+Overall explanation
+The answer is, They can turn on the Auto Stop feature for the SQL endpoint(SQL Warehouse).
+
+_________________
+
+
+Question 41
+
+The research team has put together a funnel analysis query to monitor the customer traffic on the e-commerce platform, the query takes about 30 mins to run on a small SQL endpoint cluster with max scaling set to 1 cluster. What steps can be taken to improve the performance of the query?
+
+```
+A. They can turn on the Serverless feature for the SQL endpoint.
+
+B. They can increase the maximum bound of the SQL endpoint’s scaling range anywhere from between 1 to 100 to review the performance and select the size that meets the required SLA.
+
+C. They can increase the cluster size anywhere from X small to 3XL to review the performance and select the size that meets the required SLA.
+
+D. They can turn off the Auto Stop feature for the SQL endpoint to more than 30 mins.
+
+E. They can turn on the Serverless feature for the SQL endpoint and change the Spot Instance Policy from “Cost optimized” to “Reliability Optimized.”
+```
+
+Ans: C
+
+Overall explanation
+The answer is,  They can increase the cluster size anywhere from 2X-Small to 4XL(Scale Up) to review the performance and select the size that meets your SLA. If you are trying to improve the performance of a single query at a time having additional memory, additional worker nodes mean that more tasks can run in a cluster which will improve the performance of that query.
+
+_______________________________________________________________
+
+Question 44 - Unity Catalog
+
+Which of the following is not a privilege in the Unity catalog?
+
+A. SELECT
+
+B. MODIFY
+
+C. DELETE
+
+D. CREATE TABLE
+
+E. EXECUTE
+
+
+
+Ans: C
+
+Overall explanation
+The Answer is DELETE and UPDATE permissions do not exit, you have to use MODIFY which provides both Update and Delete permissions.
+
+
+
+Please note: TABLE ACL privilege types are different from Unity Catalog privilege types, please read the question carefully.
+
+
+Unity Catalog Privileges
+
+https://learn.microsoft.com/en-us/azure/databricks/spark/latest/spark-sql/language-manual/sql-ref-privileges#privilege-types
+
+
+
+Table ACL privileges
+
+https://learn.microsoft.com/en-us/azure/databricks/security/access-control/table-acls/object-privileges#privileges
+
+
+
+
+
+
+
+
+_______________________________
+
+## Practice Test 2
+
+Question 21
+Incorrect
+Which of the following programming languages can be used to build a Databricks SQL dashboard?
+
+A. Python
+
+B. Scala
+
+C. SQL
+
+D. R
+
+
+Correct answer: C
+
+
+
+Reference: https://docs.databricks.com/en/dashboards/tutorials/create-dashboard.html
+
+
+
+### Question 39
+
+What could be the expected output of query `SELECT COUNT (DISTINCT *) FROM user on this table`:
+
+userId   username     email
+1        john.smith   john.smith@example.com
+2        NULL.        david@clear.com
+3.       kevin.smith. kevin.smith@example.com
+
+
+A. 3
+B. 2
+C. 1 
+D. 0
+E. NULL
+
+
+Correct answer: B
+
+`Count(DISTINCT *) removes rows with any column with a NULL value`
+
+
+Question 40
+
+You are working on a table called orders which contains data for 2021 and you have the second table called orders_archive which contains data for 2020, you need to combine the data from two tables and there could be a possibility of the same rows between both the tables, you are looking to combine the results from both the tables and eliminate the duplicate rows, which of the following SQL statements helps you accomplish this?
+
+A. SELECT * FROM orders UNION SELECT * FROM orders_archive
+
+B. SELECT * FROM orders INTERSECT SELECT * FROM orders_archive
+
+C. SELECT * FROM orders UNION ALL SELECT * FROM orders_archive
+
+D. SELECT * FROM orders_archive MINUS SELECT * FROM orders
+
+
+Correct answer: A
+
+UNION and UNION ALL are set operators,
+
+UNION combines the output from both queries but also eliminates the duplicates.
+
+UNION ALL combines the output from both queries.
+
+
+
+
+
+Question 44
+
+Which of the following operations are not supported on a streaming dataset view?
+
+spark.readStream.format("delta").table("sales").createOrReplaceTempView("streaming_view")
+
+
+
+A. `SELECT sum(unitssold) FROM streaming_view`
+
+B. `SELECT max(unitssold) FROM streaming_view`
+
+C. `SELECT id, sum(unitssold) FROM streaming_view GROUP BY id ORDER BY id`
+
+D. `SELECT id, count(*) FROM streaming_view GROUP BY id`
+
+E. `SELECT * FROM streadming_view ORDER BY id`
+
+Correct answer: E
+
+
+Sorting with Group by will work without any issues
+
+
+
+see below explanation for each option of the options,
+
+Sorting is not supported on streaming DataFrames/Datasets, unless it is on aggregated Dataframe/Dataset in
+Complete Output mode.
+
+Certain operations are not allowed on streaming data, please see highlighted in bold.
+
+
+
+https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#unsupported-operations
+
+
+
+Multiple streaming aggregations (i.e. a chain of aggregations on a streaming DF) are not yet supported on streaming Datasets.
+
+Limit and take the first N rows are not supported on streaming Datasets.
+
+Distinct operations on streaming Datasets are not supported.
+
+Deduplication operation is not supported after aggregation on a streaming Datasets.
+
+Sorting operations are supported on streaming Datasets only after an aggregation and in Complete Output Mode.
+
+        Note: Sorting without aggregation function is not supported.
+
+
+
+
+
+
+
+
+__________________________
+
+
+Questions to review - Practice test 3
+--------------------------------------
+#5 
+Question 5:
+Which of the following developer operations in the CI/CD can only be implemented through a GIT provider when using
+Databricks Repos.
+
+Question 7:
+Data science team members are using a single cluster to perform data analysis, although cluster size was chosen to handle multiple users and auto-scaling was enabled, the team realized queries are still running slow, what would be the suggested fix for this?
+
+Question 10:
+While investigating a data issue in a Delta table, you wanted to review logs to see when and who updated the table, what is the best way to review this data?
+
+Question 19:
+Which of the following table constraints that can be enforced on Delta lake tables are supported?
+
+Question 33:
+A DELTA LIVE TABLE pipelines can be scheduled to run in two different modes, what are these two different modes?
+
+Question 39:
+The data engineering team is using a SQL query to review data completeness every day to monitor the ETL job, and query output is being used in multiple dashboards which of the following approaches can be used to set up a schedule and automate this process?
+
+Question 43:
+A new user who currently does not have access to the catalog or schema is requesting access to the customer table in sales schema, but the customer table contains sensitive information, so you have decided to create view on the table excluding columns that are sensitive and granted access to the view GRANT SELECT ON view_name to user@company.com but when the user tries to query the view, gets the error view does not exist. What is the issue preventing user to access the view and how to fix it?
+
+
+Question 45:
+How do you upgrade an existing workspace managed table to a unity catalog table?
+
+
+Weak areas
+
+1. Databricks Repos - question 6
+
+2. Logging - DESCRIBE HISTORY instead of SHOW HISTORY - Question 10
+
+3. Constraints - Question 19
+
+Databricks currently support two types of constraints:
+
+ - NOT NULL constraints
+ - CHECK constraints
+
+In both cases, you must ensure that no data violating the constraint is already in the table prior to defining the constraint.
+Once a constraint has been added to a table, data violating the constraint will result in write failure.
+
+
+4. Variable interpolation in Python not SQL mode - Question 24
+
+Question is erroneous
+
+
+5. Schema inference in AUTOLOADER - Question 28. Use cloudFiles.schemaHints
+
+When cloudfiles.schemalocation is used to store the output of the schema inference during the load process,  with schema hints you can enforce data types for known columns ahead of time. 
+
+6. DELTA LIVE TABLE modes - Question 33
+   Modes are Triggered, Continuous.
+
+https://docs.databricks.com/en/delta-live-tables/updates.html#continuous-triggered
+
+If the pipeline uses the triggered execution mode, the system stops processing after successfully refreshing all tables or selected tables in the pipeline once, ensuring each table that is part of the update is updated based on the data available when the update started.
+
+If the pipeline uses continuous execution, Delta Live Tables processes new data as it arrives in data sources to keep tables throughout the pipeline fresh.
+
+Delta Live Tables offer two pipeline modes for running data pipelines:
+
+Continuous Execution: In this mode, Delta Live Tables constantly monitor your data sources for new data. As soon as new data arrives, the pipeline processes it to keep all the tables within the pipeline up-to-date. This ensures your data is always fresh.
+
+Manual Triggers: This mode allows you to initiate the pipeline execution yourself, whenever you need the data refreshed. This is useful for scenarios where data updates are not frequent, or you want more control over when the pipeline runs.
+
+
+7. Tasks that cannot be setup through a job - Quetion 35
+  Databricks SQL Dashboard refresh
+
+https://gemini.google.com/app/297e0e1ff1aee05e
+
+
+Domain : Incremental Data processing
+
+8. Version controllable configuration of the Job’s schedule and configuration? Question 36
+   
+They can download the JSON equivalent of the job from the Job’s page.
+
+https://gemini.google.com/app/1c506c7ca2b17f1f
+
+
+Domain: Production Pipelines
+
+9. Dashboard Data Refresh - Question 38
+
+
+The entire dashboard with 10 queries can be refreshed at once, single schedule needs to be set up to refresh at 8 AM.
+
+Domain: Production Pipelines
+
+
+https://gemini.google.com/app/1c506c7ca2b17f1f
+
+
+10. granting update permissions uses MODIFY instead of UPDATE. Need to know the various
+access modes in Databricks
+
+
+GRANT MODIFY ON TABLE table_name TO john.smith@marketing.com
+
+Access privileges on schemas:
+
+  USE SCHEMA
+
+  APPLY TAG
+
+  EXECUTE
+
+  MODIFY
+
+  READ VOLUME
+
+  REFRESH
+
+  SELECT
+
+  WRITE VOLUME
+
+  CREATE FUNCTION
+
+  CREATE MATERIALIZED VIEW
+
+  CREATE MODEL
+
+  CREATE TABLE
+
+  CREATE VOLUME
+
+Access privileges on tables:
+
+
+  APPLY TAG
+  MODIFY
+  SELECT
+  
+Volumes:
+
+  APPLY TAG
+  READ VOLUME
+  WRITE VOLUME
+
+
+
