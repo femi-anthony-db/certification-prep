@@ -1,45 +1,253 @@
 
-## DBCDEA Test 1
+# DBCDEA Test 1
 
-Question 1: Incorrect
+### Question 1: Incorrect
 You were asked to create a table that can store the below data, orderTime is a timestamp but the finance team when they query this data normally prefer the orderTime in date format, you would like to create a calculated column that can convert the orderTime column timestamp datatype to date and store it, fill in the blank to complete the DDL.
 
 ![table_data](img/dbcdea_test1_01.png)
 
-Ans:
+```
+orderId    orderTime                  units
+
+1          01-01-2022 09:10:24 AM.    100
+2          01-01-2022 10:30:30 AM.    10 
+```
+
+A. AS DEFAULT (CAST(orderTime as DATE))
+
+B. GENERATED ALWAYS AS (CAST(orderTime as DATE))
+
+C. GENERATED DEFAULT AS (CAST(orderTime as DATE))
+
+D. AS (CAST(orderTime as DATE))
+
+E. Delta lake does not support calculated columns, value should be inserted into the table as part of the ingestion process.
 
 
 
-Question 14: Incorrect
+Ans: B
+
+References: 
+
+https://docs.databricks.com/en/delta/generated-columns.html
+
+
+https://docs.microsoft.com/en-us/azure/databricks/delta/delta-batch#--use-generated-columns
+
+Delta Lake supports generated columns which are a special type of columns whose values are automatically generated based on a user-specified function over other columns in the Delta table. When you write to a table with generated columns and you do not explicitly provide values for them, Delta Lake automatically computes the values.
+
+
+### Question 3
+
+What is the main difference between AUTO LOADER  and COPY INTO?
+
+A. COPY INTO supports schema evolution.
+
+B. AUTO LOADER supports schema evolution.
+
+C. COPY INTO supports file notification when performing incremental loads.
+
+D. AUTO LOADER supports reading data from Apache Kafka
+
+E. AUTO LOADER Supports file notification when performing incremental loads.
+
+
+Ans: E
+
+
+#### Explanation
+
+Auto loader supports both directory listing and file notification but `COPY INTO` only supports directory listing.
+
+Auto loader file notification will automatically set up a notification service and queue service that subscribe to file events 
+from the input directory in cloud object storage like Azure blob storage or S3. File notification mode is more performant and 
+scalable for large input directories or a high volume of files.
+
+
+
+### Question 4
+
+
+Why does AUTO LOADER require schema location?
+
+
+A. Schema location is used to store user provided schema
+
+B. Schema location is used to identify the schema of target table
+
+C. AUTO LOADER does not require schema location, because its supports Schema evolution
+
+D. Schema location is used to store schema inferred by AUTO LOADER
+
+E. Schema location is used to identify the schema of target table and source table
+
+Ans: D
+
+
+#### Overall explanation
+The answer is, Schema location is used to store schema inferred by AUTO LOADER, so the next time AUTO LOADER runs faster as does not need to infer the schema every single time by trying to use the last known schema.
+
+
+
+Auto Loader samples the first 50 GB or 1000 files that it discovers, whichever limit is crossed first. To avoid incurring this inference cost at every stream start up, and to be able to provide a stable schema across stream restarts, you must set the option cloudFiles.schemaLocation.
+Auto Loader creates a hidden directory `_schemas` at this location to track schema changes to the input data over time.
+
+
+#### References:
+
+See https://docs.databricks.com/en/ingestion/auto-loader/options.html
+
+
+
+### Question 14: 
 
 If you run the command `VACUUM transactions retain 0 hours`,  What is the outcome of this command?
 
 Ans:
 
 
-Command will fail, you cannot run the command with retentionDurationcheck enabled
 
-Need to set retentionDurationcheck to false in order to run this command. 
+A. Command will be successful, but no data is removed
+
+B. Command will fail if you have an active transaction running
+
+C. Command will fail, you cannot run the command with retentionDurationcheck enabled
+
+D. Command will be successful, but historical data will be removed
+
+E. Command runs successful and compacts all of the data in the table
+
+
+Ans : C
+
+
+#### Explanation
+The answer is "Command will fail, you cannot run the command with retentionDurationcheck enabled".
 
 
 
-Question 18 Incorrect
+VACUUM [ [db_name.]table_name | path] [RETAIN num HOURS] [DRY RUN]
+Recursively vacuum directories associated with the Delta table and remove data files that are no longer in the latest state of the transaction log for the table and are older than a retention threshold. Default is 7 Days.
+
+The reason this check is enabled is because, DELTA is trying to prevent unintentional deletion of history, and also one important thing to point out is with 0 hours of retention there is a possibility of data loss(see below kb)
+
+Documentation in VACUUM https://docs.delta.io/latest/delta-utility.html
+
+https://kb.databricks.com/delta/data-missing-vacuum-parallel-write.html
+
+
+
+### Question 18 
 Which of the following command can be used to drop a managed delta table and the underlying files in the storage?
 
-Ans: DROP TABLE table_name
+
+A. DROP TABLE table_name CASCADE
+
+B. DROP TABLE table_name
+
+C. Use DROP TABLE table_name command and manually delete files using command dbutils.fs.rm("/path",True)
+
+D. DROP TABLE table_name INCLUDE_FILES
+
+E. DROP TABLE table and run VACUUM command
 
 
-Question 20 Incorrect
+Ans: B
+
+
+####  Explanation
+
+The answer is DROP TABLE table_name,
+
+A. CASCADE is used only when a schema is dropped Not a table
+
+https://gemini.google.com/app/cadfcbb18857062b
+
+
+When a managed table is dropped, the table definition is dropped from metastore and everything including data, metadata, and history are also dropped from storage.
+
+
+The command to drop a table in Databricks SQL is mostly correct, but there's a minor issue:
+
+Correct: `DROP TABLE table_name`
+
+Incorrect: `DROP TABLE table_name CASCADE`
+
+The CASCADE clause is not supported in Databricks SQL for dropping tables. It's a functionality available in some traditional database systems to automatically drop dependent objects (like views or foreign keys) that reference the dropped table.
+
+Databricks SQL doesn't currently support cascading drops. If you try to use it, the command will likely fail or raise an error.
+
+
+### Question 20 
 Which of the following is correct for the global temporary view?
 
-Ans: global temporary views can be still accessed even if the notebook is detached and attached
 
+A. global temporary views cannot be accessed once the notebook is detached and attached
+
+B. global temporary views can be accessed across many clusters
+
+C. global temporary views can be still accessed even if the notebook is detached and attached
+
+D. global temporary views can be still accessed even if the cluster is restarted
+
+E. global temporary views are created in a database called temp database
+
+Ans: C
+
+g
+### Explanation
+
+The answer is global temporary views can be still accessed even if the notebook is detached and attached
+
+
+There are two types of temporary views that can be created Local and Global
+
+* A local temporary view is only available with a spark session, so another notebook in the same cluster can not access it. if a notebook is detached and reattached local temporary view is lost.
+
+* A global temporary view is available to all the notebooks in the cluster, even if the notebook is detached and reattached it can still be accessible but if a cluster is restarted the global temporary view is lost
+
+### References
 
 https://medium.com/@saravjeet.singh/databricks-basics-databases-tables-and-views-4e180d7bb293
 
 
 
-Question 29 End-to end Fault tolerance
+### Question 28
+
+Which of the following commands results in the successful creation of a view on top of the delta stream(stream on delta table)?
+
+A. `Spark.read.format("delta").table("sales").createOrReplaceTempView("streaming_vw")`
+
+B. `Spark.readStream.format("delta").table("sales").createOrReplaceTempView("streaming_vw")`
+
+C. `Spark.read.format("delta").table("sales").mode("stream").createOrReplaceTempView("streaming_vw")`
+
+D. `Spark.read.format("delta").table("sales").trigger("stream").createOrReplaceTempView("streaming_vw")`
+
+E. `Spark.read.format("delta").stream("sales").createOrReplaceTempView("streaming_vw")`
+
+F. You can not create a view on streaming data source.
+
+Ans: B
+
+####  Explanation
+
+
+The answer is:
+
+`Spark.readStream.table("sales").createOrReplaceTempView("streaming_vw")`
+
+
+When you load a Delta table as a stream source and use it in a streaming query, the query processes all of the data present in the table as well as any new data that arrives after the stream is started.
+
+You can load both paths and tables as a stream, you also have the ability to ignore deletes and changes(updates, Merge, overwrites) on the delta table.
+
+Here is more information,
+
+https://docs.databricks.com/delta/delta-streaming.html#delta-table-as-a-source
+
+
+### Question 29 End-to end Fault tolerance
 
 Which of the following techniques structured streaming uses to create an end-to-end fault tolerance ?
 
@@ -61,7 +269,7 @@ Could be C or D
 
 _____________________________
 
-Question 30 Auto Loader
+### Question 30 Auto Loader
 
 Which of the following two options are supported in identifying the arrival of new files, and incremental data from Cloud object storage using Auto Loader?
 
@@ -81,14 +289,14 @@ Ans: A
 _______________________________________
 
 
-Question 35 - Incremental Data Processing
+### Question 35 - Incremental Data Processing
 
 
 When building a DLT s pipeline you have two options to create a live tables, what is the main difference between 
 CREATE STREAMING LIVE TABLE vs CREATE LIVE TABLE ?
 
 
-A.  CREATE STREAMING LIVE table is used in MULTI HOP Architecture
+A. CREATE STREAMING LIVE table is used in MULTI HOP Architecture
 
 B. CREATE LIVE TABLE is used when working with Streaming data sources and Incremental data
 
@@ -104,7 +312,7 @@ https://chatgpt.com/c/98d64112-1a20-461a-9526-3f414ca5e7cf
 
 _____________________________________________________
 
-Question 38 - SQL Warehouses
+## Question 38 - SQL Warehouses
 
 You have noticed that Databricks SQL queries are running slow, you are asked to look reason why queries are running slow and identify 
 steps to improve the performance, when you looked at the issue you noticed all the queries are running in parallel and using a 
@@ -132,12 +340,10 @@ Overall explanation
 The answer is, They can increase the maximum bound of the SQL endpoint’s scaling range when you increase the max scaling range more clusters are added so queries instead of waiting in the queue can start running using available clusters, see below for more explanation.
 
 
-
 The question is looking to test your ability to know how to scale a SQL Endpoint(SQL Warehouse) and you have to look for cue words or need to understand if the queries are running sequentially or concurrently. if the queries are running sequentially then scale up(Size of the cluster from 2X-Small to 4X-Large) if the queries are running concurrently or with more users then scale out(add more clusters).
 
 
 SQL Endpoint(SQL Warehouse) Overview: (Please read all of the below points and the below diagram to understand )
-
 
 
 A SQL Warehouse should have at least one cluster
@@ -160,7 +366,7 @@ https://docs.databricks.com/en/compute/sql-warehouse/index.html
 __________________________
 
 
-Question 39 - SQL Warehouses
+## Question 39 - SQL Warehouses
 
 You currently working with the marketing team to setup a dashboard for ad campaign analysis, since the team is not sure how often the dashboard should be refreshed they have decided to do a manual refresh on an as needed basis. Which of the following steps can be taken to reduce the overall cost of the compute when the team is not using the compute?
 
@@ -186,7 +392,7 @@ The answer is, They can turn on the Auto Stop feature for the SQL endpoint(SQL W
 _________________
 
 
-Question 41
+## Question 41
 
 The research team has put together a funnel analysis query to monitor the customer traffic on the e-commerce platform, the query takes about 30 mins to run on a small SQL endpoint cluster with max scaling set to 1 cluster. What steps can be taken to improve the performance of the query?
 
@@ -209,7 +415,7 @@ The answer is,  They can increase the cluster size anywhere from 2X-Small to 4XL
 
 _______________________________________________________________
 
-Question 44 - Unity Catalog
+## Question 44 - Unity Catalog
 
 Which of the following is not a privilege in the Unity catalog?
 
@@ -272,7 +478,6 @@ D. R
 Correct answer: C
 
 
-
 Reference: https://docs.databricks.com/en/dashboards/tutorials/create-dashboard.html
 
 
@@ -288,9 +493,13 @@ userId   username     email
 
 
 A. 3
+
 B. 2
+
 C. 1 
+
 D. 0
+
 E. NULL
 
 
@@ -299,7 +508,7 @@ Correct answer: B
 `Count(DISTINCT *) removes rows with any column with a NULL value`
 
 
-Question 40
+### Question 40
 
 You are working on a table called orders which contains data for 2021 and you have the second table called orders_archive which contains data for 2020, you need to combine the data from two tables and there could be a possibility of the same rows between both the tables, you are looking to combine the results from both the tables and eliminate the duplicate rows, which of the following SQL statements helps you accomplish this?
 
