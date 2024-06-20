@@ -141,15 +141,15 @@ https://kb.databricks.com/delta/data-missing-vacuum-parallel-write.html
 Which of the following command can be used to drop a managed delta table and the underlying files in the storage?
 
 
-A. DROP TABLE table_name CASCADE
+A. `DROP TABLE table_name CASCADE`
 
-B. DROP TABLE table_name
+B. `DROP TABLE table_name`
 
-C. Use DROP TABLE table_name command and manually delete files using command dbutils.fs.rm("/path",True)
+C. Use `DROP TABLE table_name` command and manually delete files using command dbutils.fs.rm("/path",True)
 
-D. DROP TABLE table_name INCLUDE_FILES
+D. `DROP TABLE table_name INCLUDE_FILES`
 
-E. DROP TABLE table and run VACUUM command
+E. `DROP TABLE table` and run `VACUUM` command
 
 
 Ans: B
@@ -296,15 +296,15 @@ When building a DLT s pipeline you have two options to create a live tables, wha
 CREATE STREAMING LIVE TABLE vs CREATE LIVE TABLE ?
 
 
-A. CREATE STREAMING LIVE table is used in MULTI HOP Architecture
+A. `CREATE STREAMING LIVE table` is used in MULTI HOP Architecture
 
-B. CREATE LIVE TABLE is used when working with Streaming data sources and Incremental data
+B. `CREATE LIVE TABLE` is used when working with Streaming data sources and Incremental data
 
-C. CREATE STREAMING LIVE TABLE is used when working with Streaming data sources and Incremental data
+C. `CREATE STREAMING LIVE TABLE` is used when working with Streaming data sources and Incremental data
 
-D. There is no difference both are the same, CREATE STRAMING LIVE will be deprecated soon
+D. There is no difference both are the same, `CREATE STRAMING LIV`E will be deprecated soon
 
-E. CREATE LIVE TABLE is used in DELTA LIVE TABLES, CREATE STREAMING LIVE can only used in Structured Streaming applications
+E. `CREATE LIVE TABLE` is used in DELTA LIVE TABLES, `CREATE STREAMING LIVE` can only used in Structured Streaming applications
 
 Ans: C
 
@@ -419,6 +419,7 @@ _______________________________________________________________
 
 Which of the following is not a privilege in the Unity catalog?
 
+```
 A. SELECT
 
 B. MODIFY
@@ -428,7 +429,7 @@ C. DELETE
 D. CREATE TABLE
 
 E. EXECUTE
-
+```
 
 
 Ans: C
@@ -491,7 +492,7 @@ userId   username     email
 2        NULL.        david@clear.com
 3.       kevin.smith. kevin.smith@example.com
 
-
+```
 A. 3
 
 B. 2
@@ -501,7 +502,7 @@ C. 1
 D. 0
 
 E. NULL
-
+```
 
 Correct answer: B
 
@@ -512,6 +513,7 @@ Correct answer: B
 
 You are working on a table called orders which contains data for 2021 and you have the second table called orders_archive which contains data for 2020, you need to combine the data from two tables and there could be a possibility of the same rows between both the tables, you are looking to combine the results from both the tables and eliminate the duplicate rows, which of the following SQL statements helps you accomplish this?
 
+```
 A. SELECT * FROM orders UNION SELECT * FROM orders_archive
 
 B. SELECT * FROM orders INTERSECT SELECT * FROM orders_archive
@@ -520,7 +522,7 @@ C. SELECT * FROM orders UNION ALL SELECT * FROM orders_archive
 
 D. SELECT * FROM orders_archive MINUS SELECT * FROM orders
 
-
+```
 Correct answer: A
 
 UNION and UNION ALL are set operators,
@@ -582,10 +584,6 @@ Deduplication operation is not supported after aggregation on a streaming Datase
 Sorting operations are supported on streaming Datasets only after an aggregation and in Complete Output Mode.
 
         Note: Sorting without aggregation function is not supported.
-
-
-
-
 
 
 
@@ -701,6 +699,7 @@ GRANT MODIFY ON TABLE table_name TO john.smith@marketing.com
 
 Access privileges on schemas:
 
+```
   USE SCHEMA
 
   APPLY TAG
@@ -726,19 +725,21 @@ Access privileges on schemas:
   CREATE TABLE
 
   CREATE VOLUME
+```
 
 Access privileges on tables:
 
-
+```
   APPLY TAG
   MODIFY
   SELECT
+ ```
   
 Volumes:
-
+```
   APPLY TAG
   READ VOLUME
   WRITE VOLUME
-
+```
 
 
