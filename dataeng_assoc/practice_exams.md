@@ -741,5 +741,269 @@ Volumes:
   READ VOLUME
   WRITE VOLUME
 ```
+_____________________________________________
 
+
+# DBCDEA Test 4
+
+## Incorrect answers
+
+### Question 2
+
+Where are Interactive notebook results stored in Databricks product architecture?
+
+A. Data plane
+
+B. Control plane
+
+C. Data and Control plane
+
+D. JDBC data source
+
+E. Databricks web application
+
+Ans: C
+
+#### Explanation
+
+Only Job results are stored in Data Plane(your storage), Interactive notebook results are stored in a combination of the 
+control plane (partial results for presentation in the UI) and customer storage.
+
+https://docs.microsoft.com/en-us/azure/databricks/getting-started/overview#--high-level-architecture
+
+By default, interactive notebook results in Databricks are stored in the Databricks-managed control plane [1]. This offers convenience as it removes the need for users to manage storage locations themselves. However, there is also an option to configure your workspace to store these results in your cloud provider's account (e.g., AWS S3 or Azure Blob Storage) [1, 3]. This can be beneficial for reasons like security or cost management.
+
+Here's a summary of the storage options:
+
+Databricks control plane (default): Convenient, good for small results.
+Cloud provider storage: Offers more control and security, potentially lower costs, but requires user management of storage location.
+Databricks admins can choose the storage location that best suits their organization's needs [1, 3].
+
+https://gemini.google.com/app/7f80486fc9d77b6b
+
+
+### Question 8
+
+
+Create a schema called bronze using location ‘/mnt/delta/bronze’, and check if the schema exists before creating.
+
+
+A. `CREATE SCHEMA IF NOT EXISTS bronze LOCATION '/mnt/delta/bronze'`
+
+B. `CREATE SCHEMA bronze IF NOT EXISTS LOCATION '/mnt/delta/bronze'`
+
+C. `if IS_SCHEMA('bronze'): CREATE SCHEMA bronze LOCATION '/mnt/delta/bronze'`
+
+D. Schema creation is not available in metastore, it can only be done in Unity catalog UI
+
+E. Cannot create schema without a database
+
+
+Ans: A
+
+
+#### Overall explanation
+https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-create-schema.html
+
+
+The format of the `CREATE SCHEMA` command is:
+
+`CREATE SCHEMA [ IF NOT EXISTS ] schema_name [ LOCATION schema_directory ]`
+
+### Question 11
+
+
+When you drop a managed table using SQL syntax DROP TABLE table_name how does it impact metadata, history, and data stored in the table?
+
+
+A. Drops table from meta store, drops metadata, history, and data in storage.
+
+B. Drops table from meta store and data from storage but keeps metadata and history in storage
+
+C. Drops table from meta store, meta data and history but keeps the data in storage
+
+D. Drops table but keeps meta data, history and data in storage
+
+E. Drops table and history but keeps meta data and data in storage
+
+
+**Ans: A**
+
+
+#### Overall explanation
+
+For a managed table, a drop command will drop everything from metastore and storage.
+
+
+##### DROP TABLE
+
+**Deletes the table and removes the directory associated with the table from the file system if the table is not EXTERNAL table**. 
+An exception is thrown if the table does not exist. 
+To drop a table you must be its owner, or the owner of the schema, catalog, or metastore the table resides in.
+
+In case of an external table, only the associated metadata information is removed from the metastore schema.
+
+**Metadata:**
+
+   Managed Tables: 
+
+   Dropping a managed table removes all associated metadata from the Databricks metastore. This includes table schema, location of data files, and any access control information.
+
+
+   External Tables: 
+
+   Dropping an external table only removes the table definition from the metastore. This metadata includes the table schema and the location of the data files. However, information about ownership, permissions, or any table statistics might still reside in the metastore depending on configuration.
+
+
+
+**Data Files:**
+
+   Managed Tables: 
+
+   As mentioned earlier, dropping a managed table removes the data files themselves along with the metadata.
+
+
+   External Tables:
+
+   Dropping an external table has no effect on the data files. They remain in the original storage location outside of Databricks.
+
+
+
+#### References
+
+https://docs.databricks.com/en/sql/language-manual/sql-ref-syntax-ddl-drop-table.html
+
+https://gemini.google.com/app/51560ab79991e88d
+
+
+### Question 31
+
+You are working to set up two notebooks to run on a schedule, the second notebook is dependent on the first notebook but both notebooks need different types of compute to run in an optimal fashion, what is the best way to set up these notebooks as jobs?
+
+A. Use DELTA LIVE PIPELINES instead of notebook tasks
+
+B. A Job can only use single cluster, setup job for each notebook and use job dependency to link both jobs together
+
+C. Each task can use different cluster, add these two notebooks as two tasks in a single job with linear dependency and modify the cluster as needed for each of the tasks
+
+D. Use a single job to setup both notebooks as individual tasks, but use the cluster API to setup the second cluster before the start of second task
+
+E. Use a very large cluster to run both the tasks in a single job
+
+
+Ans: C
+
+#### Overall explanation
+
+Tasks in Jobs can support different clusters for each task in the same job.
+
+
+
+### Question 39
+
+What is the top-level object in unity catalog?
+
+
+A. Catalog
+
+B. Table
+
+C. Workspace
+
+D. Database
+
+E. Metastore
+
+**Ans: E**
+
+
+#### Overall explanation
+
+The top-level object in Databricks Unity Catalog is a **Metastore**.
+
+A metastore acts as a central repository for storing metadata about your data and AI assets. 
+
+This includes information like:
+
+* Location of your data tables
+
+* Schema definitions
+* Permissions for accessing the data
+
+
+Metastores provide a way to organize and govern your data assets within Databricks.
+
+#### References
+
+https://gemini.google.com/app/881a4eb4f30bf8f2
+
+
+### Question 40
+
+One of the team members Steve who has the ability to create views, created a new view called regional_sales_vw on the existing table called sales which is owned by John, and the second team member Kevin who works with regional sales managers wanted to query the data in regional_sales_vw, so Steve granted the permission to Kevin using command
+
+`GRANT VIEW, USAGE ON regional_sales_vw to kevin@company.com` 
+
+but Kevin is still unable to access the view?
+
+
+A. Kevin needs select access on the table sales
+
+B. Kevin needs owner access on the view regional_sales_vw
+
+C. Steve is not the owner of the sales table
+
+D. Kevin is not the owner of the sales table
+
+E. Table access control is not enabled on the table and view
+
+**Ans: C**
+
+#### Overall explanation
+
+Ownership determines whether or not you can grant privileges on derived objects to other users, 
+since Steve is not the owner of the underlying sales table, he can not grant access to the table or data in the table indirectly.
+
+
+Only owner(user or group) can grant access to a object
+
+#### References
+
+https://docs.microsoft.com/en-us/azure/databricks/security/access-control/table-acls/object-privileges#a-user-has-select-privileges-on-a-view-of-table-t-but-when-that-user-tries-to-select-from-that-view-they-get-the-error-user-does-not-have-privilege-select-on-table
+
+
+
+[Data object privileges - Azure Databricks | Microsoft Doc](https://learn.microsoft.com/en-us/azure/databricks/data-governance/table-acls/object-privileges#a-user-has-select-privileges-on-a-view-of-table-t-but-when-that-user-tries-to-select-from-that-view-they-get-the-error-user-does-not-have-privilege-select-on-table)
+
+
+### Question 43
+
+Which of the following developer operations in CI/CD flow can be implemented in Databricks Repos?
+
+A. Delete branch
+
+B. Trigger Databricks CICD pipeline
+
+C. Commit and push code
+
+D. Create a pull request
+
+E. Approve the pull request
+
+**Ans: C**
+
+**D** is also correct, possibly **A & E**
+
+#### Overall explanation
+
+The answer is Commit and push code.
+
+#### References
+
+(New) : https://docs.databricks.com/en/repos/ci-cd-techniques-with-repos.html
+
+
+Questions to review - Practice test 4 :  5, 7, 8, 12, 15, 16, 17, 19, 22, 24, 25, 29, 30, 32, 34, 35, 38, 39, 42, 43, 45
+
+_____________________________________________________________
 
