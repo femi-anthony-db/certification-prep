@@ -992,7 +992,7 @@ E. Approve the pull request
 
 **Ans: C**
 
-**D** is also correct, possibly **A & E**
+**D** is also correct.
 
 #### Overall explanation
 
@@ -1003,7 +1003,410 @@ The answer is Commit and push code.
 (New) : https://docs.databricks.com/en/repos/ci-cd-techniques-with-repos.html
 
 
+The Delta Live Tables Pipeline is configured to run in Development mode using the Triggered Pipeline Mode. 
+What is the expected outcome after clicking Start to update the pipeline?
+
+
+All datasets will be updated once and the pipeline will shut down. The compute resources will persist to allow for additional testing.
+
+
+DLT Development and production modes
+
+When you run your pipeline in development mode, the Delta Live Tables system:
+
+- Reuses a cluster to avoid the overhead of restarts.
+
+- Disables pipeline retries so you can immediately detect and fix errors.
+
+In production mode, the Delta Live Tables system:
+
+- Restarts the cluster for specific recoverable errors, including memory leaks and stale credentials.
+
+- Retries execution in the event of specific errors, for example, a failure to start a cluster.
+
+
+The Delta Live Table Pipeline is configured to run in Production mode using the continuous Pipeline Mode. 
+What is the expected outcome after clicking Start to update the pipeline?
+
+All datasets will be updated continuously and the pipeline will not shut down.
+The compute resources will persist with the pipeline.
+
+Delta Live Tables supports two different modes of execution:
+
+Triggered pipelines update each table with whatever data is currently available and then stop the cluster running the pipeline. Delta Live Tables automatically analyzes the dependencies between your tables and starts by computing those that read from external sources. Tables within the pipeline are updated after their dependent data sources have been updated.
+
+Continuous pipelines update tables continuously as input data changes. Once an update is started, it continues to run until manually stopped. Continuous pipelines require an always-running cluster but ensure that downstream consumers have the most up-to-date data
+
+
+
 Questions to review - Practice test 4 :  5, 7, 8, 12, 15, 16, 17, 19, 22, 24, 25, 29, 30, 32, 34, 35, 38, 39, 42, 43, 45
 
 _____________________________________________________________
+
+
+
+# DBCDEA Test 5
+
+### Question 12
+
+Identify one of the below statements that can query a delta table in PySpark Dataframe API
+
+```
+A. spark.read.mode("delta").table("table_name")
+
+B. spark.read.table.delta("table_name")
+
+C. spark.read.table("table_name")
+
+D. spark.read.format("delta").LoadTableAs("table_name")
+
+E. spark.read.format("delta").TableAs("table_name")
+```
+
+Ans: C
+
+#### Explanation
+
+Chat GPT
+
+[List the ways to read a delta table in Databricks](https://chatgpt.com/c/112e671d-a537-4268-843c-cce10d9a3a89)
+
+[List the ways to write a delta table in Databricks](https://chatgpt.com/c/25a15a65-f57c-4ef6-ab8f-3fab39588284)
+
+
+### Question 17
+
+Below sample input data contains two columns, one cartId also known as session id, 
+and the second column is called items, every time a customer makes a change to the cart 
+this is stored as an array in the table, the Marketing team asked you to create a 
+unique list of item’s that were ever added to the cart by each customer, 
+fill in blanks by choosing the appropriate array function so the query produces below expected result as shown below.
+
+
+
+Schema: cartId INT, items Array<INT>
+
+
+Sample Input Data
+
+```
+cartId   items
+1        [1,100,200,300]
+1        [1,250,300]
+```
+
+Expected Result
+```
+cartId    items
+1         [1,100,200,300,250]
+```
+
+Code
+```
+SELECT cartId, ___ (___(items)) as items
+FROM carts GROUP BY cartId
+```
+
+A. FLATTEN, COLLECT_UNION
+
+B. ARRAY_UNION, FLATTEN
+
+C. ARRAY_UNION, ARRAY_DISTINT
+
+D. ARRAY_UNION, COLLECT_SET
+
+
+CREATE OR REPLACE TEMPORARY VIEW carts AS
+SELECT cartId, items
+FROM VALUES (1, array(1,100,200,300),
+            (1, array(1,250,300)) as inline(cartId, items);
+
+
+
+
+
+
+Review 12, 13, 15, 17, 18, 19, 20, 26, 27, 33, 39, 40, 41, 42, 43, 44
+
+12 - check if loadTableAs is valid
+17 - Difference between COLLECT_SET and ARRAY_DISTINCT ?
+18 - Understand ARRAY_FILTER
+20 - Understand ARRAY_EXPR
+
+26 - Understand how to get list of all active streams in Spark
+33 - Review how constraints and EXPECTATIONS work - default case and violations etc
+
+38 - Lookup query parameters for SQL dashboard
+39 - Understand use of Delta cache
+
+42 - Understand the term dynamic access control list in context of UC. I feel that dynamic view functions
+     were pre-UC.
+
+Does ARRAY_DISTINCT return an array while COLLECT_SET a set ?
+
+
+
+
+## Sections to read
+
+
+* [Databrick widgets](https://docs.databricks.com/en/notebooks/widgets.html)
+
+* [Continuous vs Triggered Pipeline Execution](https://docs.databricks.com/en/delta-live-tables/updates.html#continuous-triggered)
+
+* [What are Databricks SQL alerts?](https://docs.databricks.com/en/sql/user/alerts/index.html#what-are-databricks-sql-alerts)
+
+
+________
+
+## DBCDEA Test 6
+
+### Question 9 Which of the following tasks is not supported by Databricks Repos, and must be performed in your Git provider ?
+
+
+A. Clone, push to, or pull from a remote Git repository.
+
+B. Create and manage branches for development work.
+
+C. Create notebooks, and edit notebooks and other files.
+
+D. Visually compare differences upon commit.
+
+E. Delete branches
+
+Ans: E
+
+#### Overall explanation
+
+The following tasks are not supported by Databricks Repos, and must be performed in your Git provider:
+
+ * Create a pull request
+
+ * Delete branches
+
+* Merge and rebase branches *
+
+
+* NOTE: Recently, merge and rebase branches have become supported in Databricks Repos. However, this may still not be updated in the current exam version.
+
+Reference:
+
+https://learn.microsoft.com/en-us/azure/databricks/repos/git-operations-with-repos?source=recommendations
+
+### Question 16
+
+Which of the following commands can a data engineer use to create a new table along with a comment ?
+
+```
+A. CREATE TABLE payments
+   COMMENT "This table contains sensitive information"
+   AS SELECT * FROM bank_transactions
+
+B. CREATE TABLE payments
+   COMMENT("This table contains sensitive information")
+   AS SELECT * FROM bank_transactions
+
+C. CREATE TABLE payments
+   AS SELECT * FROM bank_transactions
+   COMMENT "This table contains sensitive information"
+
+D. CREATE TABLE payments
+   AS SELECT * FROM bank_transactions
+   COMMENT("This table contains sensitive information")
+
+E. COMMENT("This table contains sensitive information")
+   CREATE TABLE payments
+   AS SELECT * FROM bank_transactions
+```
+
+Ans : A
+#### Overall explanation
+
+The CREATE TABLE clause supports adding a descriptive comment for the table. This allows for easier discovery of table contents.
+
+
+**Syntax**:
+
+	CREATE TABLE table_name
+	COMMENT "here is a comment"
+	AS query
+
+
+Reference: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-create-table-using.html
+
+
+### Question 18
+
+A data engineer is designing a Delta Live Tables pipeline. The source system generates files containing changes captured in the source data. Each change event has metadata indicating whether the specified record was inserted, updated, or deleted. In addition to a timestamp column indicating the order in which the changes happened. The data engineer needs to update a target table based on these change events.
+
+Which of the following commands can the data engineer use to best solve this problem?
+
+```
+A. MERGE INTO
+
+B. APPLY CHANGES INTO
+
+C. UPDATE
+
+D. COPY INTO
+
+E. cloud_files
+```
+
+Ans: B
+
+#### Overall explanation
+
+The events described in the question represent Change Data Capture (CDC) feed. CDC is logged at the source as events that contain both the data of the records along with metadata information:
+
+Operation column indicating whether the specified record was inserted, updated, or deleted
+
+Sequence column that is usually a timestamp indicating the order in which the changes happened
+
+You can use the `APPLY CHANGES INTO` statement to use Delta Live Tables CDC functionality
+
+
+Reference: https://docs.databricks.com/workflows/delta-live-tables/delta-live-tables-cdc.html
+
+
+### Question 26
+
+Which of the following is used by Auto Loader to load data incrementally?
+
+A. DEEP CLONE
+
+B. Multi-hop architecture
+
+C. COPY INTO
+
+D.  Spark Structured Streaming
+
+E. Databricks SQL
+
+Ans: D
+
+#### Overall explanation
+Auto Loader is based on Spark Structured Streaming. It provides a Structured Streaming source called cloudFiles.
+
+
+Reference: https://docs.databricks.com/ingestion/auto-loader/index.html
+
+
+
+### Question 34
+
+A data engineer has the following query in a Delta Live Tables pipeline:
+
+
+	  CREATE LIVE TABLE aggregated_sales
+	  AS SELECT store_id, sum(total)
+	  FROM cleaned_sales
+	  GROUP BY store_id
+
+
+The pipeline is failing to start due to an error in this query
+
+
+Which of the following changes should be made to this query to successfully start the DLT pipeline ?
+
+```
+A. CREATE STREAMING TABLE aggregated_sales
+   AS SELECT store_id, sum(total)
+   FROM LIVE.cleaned_sales
+   GROUP BY store_id
+
+B. CREATE TABLE aggregated_sales
+   AS SELECT store_id, sum(total)
+   FROM LIVE.cleaned_sales
+   GROUP BY store_id
+
+C. CREATE LIVE TABLE aggregated_sales
+   AS SELECT store_id, sum(total)
+   FROM LIVE.cleaned_sales
+   GROUP BY store_id
+
+D. CREATE STREAMING LIVE TABLE aggregated_sales
+   AS SELECT store_id, sum(total)
+   FROM cleaned_sales
+   GROUP BY store_id
+
+E. CREATE STREAMING LIVE TABLE aggregated_sales
+   AS SELECT store_id, sum(total)
+   FROM STREAM(cleaned_sales)
+   GROUP BY store_id
+```
+#### Overall explanation
+
+In DLT pipelines, we use the CREATE LIVE TABLE syntax to create a table with SQL. 
+To query another live table, prepend the LIVE. keyword to the table name.
+
+
+	CREATE LIVE TABLE aggregated_sales
+	AS SELECT store_id, sum(total)
+	FROM LIVE.cleaned_sales
+    GROUP BY store_id
+
+
+
+Reference: https://docs.databricks.com/workflows/delta-live-tables/delta-live-tables-sql-ref.html
+
+## My Questions
+
+
+My question
+
+
+Which of the following enable us to execute a single micro-batch to process all the available streaming data and then stop on its own ?
+
+A. .trigger(processingTime="Once")
+B. .trigger(availableNow=True)
+C. .trigger(processingTime="0")
+D. .trigger(availableNow=Yes)
+
+Ans: B
+
+Which of the following enable us to execute a single micro-batch to process all the available streaming data every 10 seconds ?
+
+A. .trigger(processingTime="10")
+B. .trigger(availableNow="10")
+C. .trigger(processingTime="10 seconds")
+D. .trigger(availableNow="10 seconds")
+
+Ans: C
+
+
+If no argument to `.trigger()` isspecified, what is the default processing time for Structured Streaming ?
+A. 100ms
+B. 1 second
+C. 10 seconds
+D. 500ms
+
+Ans: D
+
+
+
+https://docs.databricks.com/data-engineering/delta-live-tables/delta-live-tables-concepts.html#delta-live-tables-concepts
+
+
+
+### Databricks Repos
+
+Databricks Repos supports the following operations:
+
+
+* Create a new branch
+* Switch to a different branch
+* Commit and push changes to the remote Git repository
+* Pull changes from the remote Git repository
+* Merge branches
+* Rebase a branch on another branch
+* Resolve merge conflicts
+* Git reset
+
+It does **NOT** support:
+
+* Delete a branch
+* Create and approve pull requests
+* Trigger Databricks CICD pipeline
+
 
