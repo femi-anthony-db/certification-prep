@@ -140,3 +140,124 @@ SQL endpoint(SQL Warehouse) scales horizontally(scale-out) and vertical (scale-u
 Scale-out -> to add more clusters for a SQL endpoint, change max number of clusters
 
 If you are trying to improve the throughput, being able to run as many queries as possible then having an additional cluster(s) will improve the performance.
+
+
+### Difference between Delta Live Tables and Streaming Live Tables 
+
+#### Delta Live Tables
+Live tables are **materialized views** for the lakehouse.
+
+A live table is:
+
+ * Defined by a SQL query
+ * Created and kept up to date by a pipeline
+
+ 
+
+In DLT pipelines, we use the CREATE LIVE TABLE syntax to create a table with SQL. 
+To query another live table, prepend the LIVE. keyword to the table name.
+
+
+	CREATE LIVE TABLE aggregated_sales
+	AS SELECT store_id, sum(total)
+	FROM LIVE.cleaned_sales
+    GROUP BY store_id
+
+
+
+Dependencies owned by other producers are just read from the catalog or spark data source
+as normal;
+
+   	CREATE LIVE TABLE events
+   	AS SELECT ... FROM prod.raw_data
+
+LIVE dependencies, from the **same pipelin** are read from the LIVE schema.
+
+    CREATE LIVE TABLE report
+    AS SELECT ... FROM LIVE.events
+
+DLT detects LIVE dependencies and executes all operations in correct order.
+
+DLT handles parallelism and captures the lineage of the data.
+
+#### Streaming Live Tables
+
+A streaming live table is based on Spark Structured Streaming 
+and is stateful:
+
+ * Ensures exactly-once processing of input rows
+ * Inputs are only read once.
+
+SLTs compute results over append-only streams such as Kafka, Kinesis or Auto Loader.
+
+SLTs allow one to reduce costs and latency by avoiding reprocessing of old data
+
+
+Easily ingest files from cloud storage as they are uploaded:
+
+
+     CREATE STREAMING  LIVE TABLE report
+     AS SELECT sum(profit)
+     FROM cloud_files(prod.sales)
+     
+
+* _cloud_files_ keeps track of which files have been read to avoid duplication and wasted work. Uses AUTO LOADER
+* Supports both listing and notifications for arbitrary scale
+* Configurable schema inference and schema evolution
+
+Can allso read from live streaming sources 
+
+SQL_STREAM function
+
+    CREATE STREAMING LIVE TABLE mystream
+    AS SELECT * FROM STREAM(my_table)
+
+ `my_table` must be an **append-only** source
+
+ * `STREAM(my_table)` reads a stream of new records instead of a snapshot
+ * Streaming tables must be an append-only table
+ * Any append-only delta table can be read as a stream (from live schema, catalog/path)
+
+
+
+https://employee-academy.databricks.com/learn/course/1266/play/14544/introduction-to-delta-live-tables
+
+### Differences between Development DLT pipelines and Production DLT pipelines ?
+
+#### Development
+
+ * Resuses a long-running cluster, running for fast iteration
+ * No retries on errors enabling faster debugging. Runs once only.
+
+#### Production
+
+ * Cuts costs by turning off clusters as soon as they are done.(uses job cluster)
+ * Escalating retries, incl. cluster restarts, ensure reliability in the face of transient issues.
+
+
+
+### DLT Pipelinea and Expectations
+
+Expectations are true/false expressions used to validate each row during processing
+
+```CONSTRAINT valid_timestamp
+EXPECT (timestamp > '2012-01-01')
+ON VIOLATION DROP
+
+
+@dlt.expect_or_drop(
+
+"valid_timestamp",
+col("timestamp") > '2021-01-01')
+)
+
+```
+
+DLT offers flexible policies on how to handle records that violate expectations:
+
+* Track number of bad records
+* Drop bad records
+* Abort processing for a single bad record.
+
+
+
