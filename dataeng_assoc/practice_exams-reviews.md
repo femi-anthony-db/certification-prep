@@ -1410,3 +1410,127 @@ It does **NOT** support:
 * Trigger Databricks CICD pipeline
 
 
+
+## Practice Test 1 Retake - 
+
+Score : 88%
+
+### Question 3
+
+What is the main difference between AUTO LOADER  and COPY INTO?
+
+A. COPY INTO supports schema evolution.
+
+B. AUTO LOADER supports schema evolution.
+
+C. COPY INTO supports file notification when performing incremental loads.
+
+D. AUTO LOADER supports reading data from Apache Kafka
+
+E. AUTO LOADER Supports file notification when performing incremental loads.
+
+**Ans: E**
+
+#### Overall explanation
+Auto loader supports both directory listing and file notification but COPY INTO only supports directory listing.
+
+
+Auto loader file notification will automatically set up a notification service and queue service that subscribe to 
+file events from the input directory in cloud object storage like Azure blob storage or S3. 
+File notification mode is more performant and scalable for large input directories or a high volume of files.
+
+
+### Question 29
+
+Which of the following techniques structured streaming uses to create an end-to-end fault tolerance?
+
+A. Checkpointing and Water marking
+
+B. Write ahead logging and water marking
+
+C. Checkpointing and idempotent sinks
+
+D. Write ahead logging and idempotent sinks
+
+E. Stream will failover to available nodes in the cluster
+
+
+
+Ans: C, D
+
+### Overall explanation
+
+The answer is Checkpointing, Write ahead logging and idempotent sinks
+
+
+How does structured streaming achieves end to end fault tolerance:
+
+First, Structured Streaming uses **checkpointing** and **write-ahead** logs to record the offset range of data being processed during each trigger interval.
+
+Next, the streaming sinks are designed to be _idempotent_—that is, multiple writes of the same data (as identified by the offset) do not result in duplicates being written to the sink.
+
+Taken together, replayable data sources and idempotent sinks allow Structured Streaming to ensure end-to-end, exactly-once semantics under any failure condition.
+
+
+### Question 35
+
+When building a DLT s pipeline you have two options to create a live tables, what is the main difference between CREATE STREAMING LIVE TABLE vs CREATE LIVE TABLE?
+
+
+A. CREATE STREAMING LIVE table is used in MULTI HOP Architecture
+
+B. CREATE LIVE TABLE is used when working with Streaming data sources and Incremental data
+
+C. CREATE STREAMING LIVE TABLE is used when working with Streaming data sources and Incremental data
+
+D. CREATE LIVE TABLE is used in DELTA LIVE TABLES, CREATE STREAMING LIVE can only used in Structured Streaming applications
+
+
+#### Overall explanation
+The answer is,  CREATE STREAMING LIVE TABLE is used when working with Streaming data sources and Incremental data
+
+
+### Question 38
+
+You have noticed that Databricks SQL queries are running slow, you are asked to look reason why queries are running slow and identify steps to improve the performance, when you looked at the issue you noticed all the queries are running in parallel and using a SQL endpoint(SQL Warehouse) with a single cluster. Which of the following steps can be taken to improve the performance/response times of the queries?
+
+
+A. They can turn on the Serverless feature for the SQL endpoint(SQL warehouse).
+
+B. They can increase the maximum bound of the SQL endpoint(SQL warehouse)’s scaling range
+
+C. They can increase the warehouse size from 2X-Smal to 4XLarge of the SQL endpoint(SQL warehouse).
+
+D. They can turn on the Auto Stop feature for the SQL endpoint(SQL warehouse).
+
+E. They can turn on the Serverless feature for the SQL endpoint(SQL warehouse) and change the Spot Instance 
+   Policy to “Reliability Optimized.”
+
+**Ans: B**
+
+ #### Overall explanation
+
+The answer is, They can increase the maximum bound of the SQL endpoint’s scaling range when you increase the max scaling range more clusters are added so queries instead of waiting in the queue can start running using available clusters, 
+
+The question is looking to test your ability to know how to scale a SQL Endpoint(SQL Warehouse) and you have to look for cue words or need to understand if the queries are running sequentially or concurrently. if the queries are running sequentially then scale up(Size of the cluster from 2X-Small to 4X-Large) if the queries are running concurrently or with more users then scale out(add more clusters).
+
+### Question 45
+
+A team member is leaving the team and he/she is currently the owner of the few tables, instead of transfering the ownership to a user you have decided to transfer the ownership to a group so in the future anyone in the group can manage the permissions rather than a single individual, which of the following commands help you accomplish this?
+
+```
+A. ALTER TABLE table_name OWNER to 'group'
+
+B. TRANSFER OWNER table_name to 'group'
+
+C. GRANT OWNER table_name to 'group'
+
+D. ALTER OWNER ON table_name to 'group'
+
+E. GRANT OWNER On table_name to 'group'
+```
+
+
+#### Overall explanation
+
+The answer is `ALTER TABLE table_name OWNER to ‘group’`
