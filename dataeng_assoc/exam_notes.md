@@ -80,6 +80,15 @@ You do not plan to load subsets of previously uploaded files. With Auto Loader, 
 
 Auto loader file notification will automatically set up a notification service and queue service that subscribe to file events from the input directory in cloud object storage like Azure blob storage or S3. File notification mode is more performant and scalable for large input directories or a high volume of files.
 
+[AUTO LOADER File Detection Modes](https://docs.databricks.com/en/ingestion/auto-loader/file-detection-modes.html)
+
+
+COPY INTO only support directory listing NOT file notification modes:
+
+[How does COPY INTO  know when a new file is added](https://chatgpt.com/c/c3913dfd-53a3-4703-9c9c-dca78246993a)
+
+
+https://docs.databricks.com/en/ingestion/auto-loader/file-detection-modes.html
 
 Here are some additional notes on when to use COPY INTO vs Auto Loader
 
@@ -125,3 +134,9 @@ A warehouse can have more than one cluster this is called Scale out. If a wareho
 A single query will not span more than one cluster, once a query is submitted to a cluster it will remain in that cluster until the query execution finishes irrespective of how many clusters are available to scale.
 
 If the queries are running sequentially then scale up(Size of the cluster from 2X-Small to 4X-Large) if the queries are running concurrently or with more users then scale out(add more clusters).
+
+SQL endpoint(SQL Warehouse) scales horizontally(scale-out) and vertical (scale-up), you have to understand when to use what.
+
+Scale-out -> to add more clusters for a SQL endpoint, change max number of clusters
+
+If you are trying to improve the throughput, being able to run as many queries as possible then having an additional cluster(s) will improve the performance.
