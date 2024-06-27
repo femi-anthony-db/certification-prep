@@ -1,5 +1,5 @@
 
-# DBCDEA Test 1
+## DBCDEA Practice Test 1
 
 ### Question 1: Incorrect
 You were asked to create a table that can store the below data, orderTime is a timestamp but the finance team when they query this data normally prefer the orderTime in date format, you would like to create a calculated column that can convert the orderTime column timestamp datatype to date and store it, fill in the blank to complete the DDL.
@@ -13,13 +13,13 @@ orderId    orderTime                  units
 2          01-01-2022 10:30:30 AM.    10 
 ```
 
-A. AS DEFAULT (CAST(orderTime as DATE))
+A. `AS DEFAULT (CAST(orderTime as DATE))`
 
-B. GENERATED ALWAYS AS (CAST(orderTime as DATE))
+B. `GENERATED ALWAYS AS (CAST(orderTime as DATE))`
 
-C. GENERATED DEFAULT AS (CAST(orderTime as DATE))
+C. `GENERATED DEFAULT AS (CAST(orderTime as DATE))`
 
-D. AS (CAST(orderTime as DATE))
+D. `AS (CAST(orderTime as DATE))`
 
 E. Delta lake does not support calculated columns, value should be inserted into the table as part of the ingestion process.
 
@@ -41,11 +41,11 @@ Delta Lake supports generated columns which are a special type of columns whose 
 
 What is the main difference between AUTO LOADER  and COPY INTO?
 
-A. COPY INTO supports schema evolution.
+A. `COPY INTO` supports schema evolution.
 
 B. AUTO LOADER supports schema evolution.
 
-C. COPY INTO supports file notification when performing incremental loads.
+C. `COPY INTO` supports file notification when performing incremental loads.
 
 D. AUTO LOADER supports reading data from Apache Kafka
 
@@ -81,7 +81,7 @@ D. Schema location is used to store schema inferred by AUTO LOADER
 
 E. Schema location is used to identify the schema of target table and source table
 
-Ans: D
+**Ans: D**
 
 
 #### Overall explanation
@@ -192,9 +192,9 @@ D. global temporary views can be still accessed even if the cluster is restarted
 
 E. global temporary views are created in a database called temp database
 
-Ans: C
+**Ans: C**
 
-g
+
 ### Explanation
 
 The answer is global temporary views can be still accessed even if the notebook is detached and attached
@@ -228,7 +228,7 @@ E. `Spark.read.format("delta").stream("sales").createOrReplaceTempView("streamin
 
 F. You can not create a view on streaming data source.
 
-Ans: B
+**Ans: B**
 
 ####  Explanation
 
@@ -284,8 +284,11 @@ D. File hashing, Dynamic file lookup
 
 E. Checkpointing and Write ahead logging
 
-Ans: A
+**Ans: A**
 
+#### Reference:
+
+https://spark.apache.org/docs/3.0.0-preview/structured-streaming-programming-guide.html#overview
 _______________________________________
 
 
@@ -306,13 +309,13 @@ D. There is no difference both are the same, `CREATE STRAMING LIV`E will be depr
 
 E. `CREATE LIVE TABLE` is used in DELTA LIVE TABLES, `CREATE STREAMING LIVE` can only used in Structured Streaming applications
 
-Ans: C
+**Ans: C**
 
 https://chatgpt.com/c/98d64112-1a20-461a-9526-3f414ca5e7cf
 
 _____________________________________________________
 
-## Question 38 - SQL Warehouses
+### Question 38 - SQL Warehouses
 
 You have noticed that Databricks SQL queries are running slow, you are asked to look reason why queries are running slow and identify 
 steps to improve the performance, when you looked at the issue you noticed all the queries are running in parallel and using a 
@@ -333,10 +336,10 @@ D. They can turn on the Auto Stop feature for the SQL endpoint(SQL warehouse).
 
 E. They can turn on the Serverless feature for the SQL endpoint(SQL warehouse) and change the Spot Instance Policy to “Reliability Optimized.”
 
-Ans: B
+**Ans: B**
 
 
-Overall explanation
+#### Overall explanation
 The answer is, They can increase the maximum bound of the SQL endpoint’s scaling range when you increase the max scaling range more clusters are added so queries instead of waiting in the queue can start running using available clusters, see below for more explanation.
 
 
@@ -366,7 +369,7 @@ https://docs.databricks.com/en/compute/sql-warehouse/index.html
 __________________________
 
 
-## Question 39 - SQL Warehouses
+### Question 39 - SQL Warehouses
 
 You currently working with the marketing team to setup a dashboard for ad campaign analysis, since the team is not sure how often the dashboard should be refreshed they have decided to do a manual refresh on an as needed basis. Which of the following steps can be taken to reduce the overall cost of the compute when the team is not using the compute?
 
@@ -384,7 +387,7 @@ E. They can turn on the Serverless feature for the SQL endpoint(SQL Warehouse) a
 
 ```
 
-Ans: D
+**Ans: D**
 
 Overall explanation
 The answer is, They can turn on the Auto Stop feature for the SQL endpoint(SQL Warehouse).
@@ -392,7 +395,7 @@ The answer is, They can turn on the Auto Stop feature for the SQL endpoint(SQL W
 _________________
 
 
-## Question 41
+### Question 41
 
 The research team has put together a funnel analysis query to monitor the customer traffic on the e-commerce platform, the query takes about 30 mins to run on a small SQL endpoint cluster with max scaling set to 1 cluster. What steps can be taken to improve the performance of the query?
 
@@ -408,14 +411,14 @@ D. They can turn off the Auto Stop feature for the SQL endpoint to more than 30 
 E. They can turn on the Serverless feature for the SQL endpoint and change the Spot Instance Policy from “Cost optimized” to “Reliability Optimized.”
 ```
 
-Ans: C
+**Ans: C**
 
-Overall explanation
+#### Overall explanation
 The answer is,  They can increase the cluster size anywhere from 2X-Small to 4XL(Scale Up) to review the performance and select the size that meets your SLA. If you are trying to improve the performance of a single query at a time having additional memory, additional worker nodes mean that more tasks can run in a cluster which will improve the performance of that query.
 
 _______________________________________________________________
 
-## Question 44 - Unity Catalog
+### Question 44 - Unity Catalog
 
 Which of the following is not a privilege in the Unity catalog?
 
@@ -432,11 +435,10 @@ E. EXECUTE
 ```
 
 
-Ans: C
+**Ans: C**
 
-Overall explanation
-The Answer is DELETE and UPDATE permissions do not exit, you have to use MODIFY which provides both Update and Delete permissions.
-
+#### Overall explanation
+The Answer is DELETE and UPDATE permissions do not exist, you have to use MODIFY which provides both Update and Delete permissions.
 
 
 Please note: TABLE ACL privilege types are different from Unity Catalog privilege types, please read the question carefully.
@@ -454,17 +456,12 @@ https://learn.microsoft.com/en-us/azure/databricks/security/access-control/table
 
 
 
-
-
-
-
-
 _______________________________
 
-## Practice Test 2
+##  DBCDEA Practice Test 2
 
-Question 21
-Incorrect
+### Question 21
+
 Which of the following programming languages can be used to build a Databricks SQL dashboard?
 
 A. Python
@@ -478,6 +475,7 @@ D. R
 
 Correct answer: C
 
+#### Overall explanation
 
 Reference: https://docs.databricks.com/en/dashboards/tutorials/create-dashboard.html
 
@@ -487,10 +485,12 @@ Reference: https://docs.databricks.com/en/dashboards/tutorials/create-dashboard.
 
 What could be the expected output of query `SELECT COUNT (DISTINCT *) FROM user on this table`:
 
+```
 userId   username     email
 1        john.smith   john.smith@example.com
 2        NULL.        david@clear.com
 3.       kevin.smith. kevin.smith@example.com
+```
 
 ```
 A. 3
@@ -504,9 +504,12 @@ D. 0
 E. NULL
 ```
 
-Correct answer: B
+**Ans: B**
 
-`Count(DISTINCT *) removes rows with any column with a NULL value`
+
+#### Overall explanation
+
+`Count(DISTINCT *)` removes rows with any column with a NULL value.
 
 
 ### Question 40
@@ -523,19 +526,20 @@ C. SELECT * FROM orders UNION ALL SELECT * FROM orders_archive
 D. SELECT * FROM orders_archive MINUS SELECT * FROM orders
 
 ```
-Correct answer: A
 
-UNION and UNION ALL are set operators,
+**Ans: A**
 
-UNION combines the output from both queries but also eliminates the duplicates.
+#### Overall explanation
 
-UNION ALL combines the output from both queries.
+`UNION` and `UNION ALL` are set operators,
+
+`UNION` combines the output from both queries but also eliminates the duplicates.
+
+`UNION ALL` combines the output from both queries.
 
 
 
-
-
-Question 44
+### Question 44
 
 Which of the following operations are not supported on a streaming dataset view?
 
@@ -553,12 +557,12 @@ D. `SELECT id, count(*) FROM streaming_view GROUP BY id`
 
 E. `SELECT * FROM streadming_view ORDER BY id`
 
-Correct answer: E
+**Ans: E**
 
+
+#### Overall explanation
 
 Sorting with Group by will work without any issues
-
-
 
 see below explanation for each option of the options,
 
@@ -583,16 +587,17 @@ Deduplication operation is not supported after aggregation on a streaming Datase
 
 Sorting operations are supported on streaming Datasets only after an aggregation and in Complete Output Mode.
 
-        Note: Sorting without aggregation function is not supported.
+Note: **Sorting without aggregation function is not supported**.
 
 
 
 
 __________________________
 
+# DBCDEA Practice test 3
 
-Questions to review - Practice test 3
---------------------------------------
+### Questions to review 
+
 #5 
 Question 5:
 Which of the following developer operations in the CI/CD can only be implemented through a GIT provider when using
@@ -744,7 +749,7 @@ Volumes:
 _____________________________________________
 
 
-# DBCDEA Test 4
+## DBCDEA Practice Test 4
 
 ## Incorrect answers
 
@@ -799,7 +804,7 @@ D. Schema creation is not available in metastore, it can only be done in Unity c
 E. Cannot create schema without a database
 
 
-Ans: A
+**Ans: A**
 
 
 #### Overall explanation
