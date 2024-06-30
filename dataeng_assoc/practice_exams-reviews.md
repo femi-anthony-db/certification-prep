@@ -1218,7 +1218,7 @@ Chat GPT
 [List the ways to write a delta table in Databricks](https://chatgpt.com/c/25a15a65-f57c-4ef6-ab8f-3fab39588284)
 
 
-### Question 17
+### Question 40
 
 Below sample input data contains two columns, one cartId also known as session id, 
 and the second column is called items, every time a customer makes a change to the cart 
@@ -1255,10 +1255,24 @@ A. FLATTEN, COLLECT_UNION
 
 B. ARRAY_UNION, FLATTEN
 
-C. ARRAY_UNION, ARRAY_DISTINT
+C. ARRAY_UNION, ARRAY_DISTINCT
 
 D. ARRAY_UNION, COLLECT_SET
 
+
+Ans: D
+
+#### Overall explanation
+COLLECT SET is a kind of aggregate function that combines a column value from all rows into a unique list
+
+
+ARRAY_UNION combines and removes any duplicates
+
+```
+items                   COLLECT_SET                      ARRAY_UNION(COLLECT_SET(items))
+[1,100,200,300]  -->    [[1,100,200,300],[1,250,300] --> [1,100,200,300,500]
+[1,250,300]
+```
 
 CREATE OR REPLACE TEMPORARY VIEW carts AS
 SELECT cartId, items
