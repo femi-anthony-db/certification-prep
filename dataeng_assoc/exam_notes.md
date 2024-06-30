@@ -291,13 +291,15 @@ CONSTRAINT valid_timestamp EXPECT (timestamp > '2012-01-01')
 
 **Drop invalid records**
 
-```CONSTRAINT valid_current_page EXPECT (current_page_id IS NOT NULL and current_page_title IS NOT NULL) 
+```
+CONSTRAINT valid_current_page EXPECT (current_page_id IS NOT NULL and current_page_title IS NOT NULL) 
 ON VIOLATION DROP ROW
 ```
 
 **Fail on invalid records**
 
-```CONSTRAINT valid_count EXPECT (count > 0) ON VIOLATION FAIL UPDATE
+```
+CONSTRAINT valid_count EXPECT (count > 0) ON VIOLATION FAIL UPDATE
 ```
 
 
