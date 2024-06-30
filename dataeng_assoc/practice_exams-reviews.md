@@ -24,10 +24,9 @@ D. `AS (CAST(orderTime as DATE))`
 E. Delta lake does not support calculated columns, value should be inserted into the table as part of the ingestion process.
 
 
+**Ans: B**
 
-Ans: B
-
-References: 
+#### References: 
 
 https://docs.databricks.com/en/delta/generated-columns.html
 
@@ -52,7 +51,7 @@ D. AUTO LOADER supports reading data from Apache Kafka
 E. AUTO LOADER Supports file notification when performing incremental loads.
 
 
-Ans: E
+**Ans: E**
 
 
 #### Explanation
@@ -767,7 +766,7 @@ D. JDBC data source
 
 E. Databricks web application
 
-Ans: C
+**Ans: C**
 
 #### Explanation
 
@@ -1051,6 +1050,146 @@ _____________________________________________________________
 
 
 # DBCDEA Test 5
+
+### Question 3
+
+You are currently working on creating a spark stream process to read and write in for a one-time micro batch, 
+and also rewrite the existing target table, fill in the blanks to complete the below command sucesfully.
+
+```
+spark.table("source_table")
+.writeStream
+.option("____", “dbfs:/location/silver")
+.outputMode("____")
+.trigger(Once=____)
+.table("target_table")
+```
+
+```
+A. checkpointlocation, complete, True
+
+B. targetlocation, overwrite, True
+
+C. checkpointlocation, True, overwrite
+
+D. checkpointlocation, True, complete
+
+E. checkpointlocation, overwrite, True
+```
+
+**Ans: A**
+
+#### Explanation
+
+In Spark Structured Streaming, the outputMode parameter determines how the results of the streaming query are written to the output sink. 
+
+The valid values are:
+
+
+* append - default mode
+* update
+* complete
+
+#### References
+
+https://docs.databricks.com/en/structured-streaming/output-mode.html
+
+https://sparkbyexamples.com/spark/spark-streaming-outputmode/
+
+
+### Question 4
+Incorrect
+You were asked to write python code to stop all running streams, 
+which of the following command can be used to get a list of all active streams
+ currently running so we can stop them, fill in the blank.
+
+
+for s in _______________:
+  s.stop()
+
+```
+A. Spark.getActiveStreams()
+
+B. spark.streams.active
+
+C. activeStreams()
+
+D. getActiveStreams()
+
+E. spark.streams.getActive
+```
+**Ans: B**
+
+#### Explanation
+
+In PySpark, you can use the `spark.streams.active` attribute to get a list of all active streams currently running. Here's an example:
+
+```
+# Get a list of all active streaming queries
+active_streams = spark.streams.active
+
+# Print information about each active stream
+for stream in active_streams:
+    print(f"ID: {stream.id}, Name: {stream.name}, Status: {stream.status}")
+```
+
+#### Reference:
+
+https://chatgpt.com/c/9612b393-7dfc-4ffc-b25c-00cc321b33e2
+
+
+### Question 11
+
+A dataset has been defined using Delta Live Tables and includes an expectations clause: CONSTRAINT valid_timestamp EXPECT (timestamp > '2020-01-01')
+
+What is the expected behavior when a batch of data containing data that violates these constraints is processed?
+
+A. Records that violate the expectation are added to the target dataset and recorded as invalid in the event log.
+
+B. Records that violate the expectation are dropped from the target dataset and recorded as invalid in the event log.
+
+C. Records that violate the expectation cause the job to fail.
+
+D. Records that violate the expectation are added to the target dataset and flagged as invalid in a field added to the target dataset.
+
+E. Records that violate the expectation are dropped from the target dataset and loaded into a quarantine table.
+
+
+**Ans: A**
+
+#### Overall explanation
+The answer is, Records that violate the expectation are added to the target dataset and recorded as invalid in the event log.
+
+
+Delta live tables support three types of expectations to fix bad data in DLT pipelines:
+
+
+
+**Retain invalid records**
+
+```
+CONSTRAINT valid_timestamp EXPECT (timestamp > '2012-01-01')
+
+```
+
+**Drop invalid records**
+
+```CONSTRAINT valid_current_page EXPECT (current_page_id IS NOT NULL and current_page_title IS NOT NULL) 
+ON VIOLATION DROP ROW
+```
+
+**Fail on invalid records**
+
+```CONSTRAINT valid_count EXPECT (count > 0) ON VIOLATION FAIL UPDATE
+```
+
+
+#### References:
+
+https://docs.databricks.com/en/delta-live-tables/expectations.html#language-sql
+
+https://docs.databricks.com/en/delta-live-tables/expectations.html
+
 
 ### Question 12
 
